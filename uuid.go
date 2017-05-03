@@ -323,7 +323,7 @@ func (u *UUID) Scan(src interface{}) error {
 	return fmt.Errorf("uuid: cannot convert %T to UUID", src)
 }
 
-// Returns true if the current UUID equals Nil; otherwise returns false.
+// IsNil reports whether the current UUID equals Nil.
 func (u *UUID) IsNil() bool {
 	return Equal(*u, Nil)
 }
