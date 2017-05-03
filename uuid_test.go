@@ -278,19 +278,29 @@ func TestFromStringInvalid(t *testing.T) {
 	}
 }
 
-func TestFromStringOrNil(t *testing.T) {
-	u := FromStringOrNil("")
-	if u != Nil {
-		t.Errorf("Should return Nil UUID on parse failure, got %s", u)
+func TestMust(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("Should not panic on successful parse")
+		}
+	}()
+
+	exp := UUID{0x6b, 0xa7, 0xb8, 0x10, 0x9d, 0xad, 0x11, 0xd1, 0x80, 0xb4, 0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8}
+
+	u := Must(FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+	if u != exp {
+		t.Errorf("Should return parsed UUID, got %s", u)
 	}
 }
 
-func TestFromBytesOrNil(t *testing.T) {
-	b := []byte{}
-	u := FromBytesOrNil(b)
-	if u != Nil {
-		t.Errorf("Should return Nil UUID on parse failure, got %s", u)
-	}
+func TestMustInvalid(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Should panic on unsuccessful parse")
+		}
+	}()
+
+	Must(FromString(""))
 }
 
 func TestMarshalText(t *testing.T) {

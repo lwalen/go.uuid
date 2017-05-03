@@ -356,16 +356,6 @@ func FromBytes(input []byte) (u UUID, err error) {
 	return
 }
 
-// FromBytesOrNil returns UUID converted from raw byte slice input.
-// Same behavior as FromBytes, but returns a Nil UUID on error.
-func FromBytesOrNil(input []byte) UUID {
-	uuid, err := FromBytes(input)
-	if err != nil {
-		return Nil
-	}
-	return uuid
-}
-
 // FromString returns UUID parsed from string input.
 // Input is expected in a form accepted by UnmarshalText.
 func FromString(input string) (u UUID, err error) {
@@ -373,14 +363,15 @@ func FromString(input string) (u UUID, err error) {
 	return
 }
 
-// FromStringOrNil returns UUID parsed from string input.
-// Same behavior as FromString, but returns a Nil UUID on error.
-func FromStringOrNil(input string) UUID {
-	uuid, err := FromString(input)
+// Must is a helper that wraps a call to a function returning (UUID, error)
+// and panics if the error is non-nil. It is intended for use in variable
+// initializations such as
+//	var u = uuid.Must(uuid.FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8"))
+func Must(u UUID, err error) UUID {
 	if err != nil {
-		return Nil
+		panic(err)
 	}
-	return uuid
+	return u
 }
 
 // Returns UUID v1/v2 storage state.
