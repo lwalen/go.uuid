@@ -134,7 +134,7 @@ type NullUUID struct {
 	Valid bool
 }
 
-// The nil UUID is special form of UUID that is specified to have all
+// Nil is a special form of UUID that is specified to have all
 // 128 bits set to zero.
 var Nil = UUID{}
 
@@ -302,7 +302,7 @@ func (u *UUID) UnmarshalBinary(data []byte) (err error) {
 
 // Value implements the driver.Valuer interface.
 func (u UUID) Value() (driver.Value, error) {
-	return u.String(), nil
+	return u.Bytes(), nil
 }
 
 // Scan implements the sql.Scanner interface.
@@ -318,6 +318,9 @@ func (u *UUID) Scan(src interface{}) error {
 
 	case string:
 		return u.UnmarshalText([]byte(src))
+	case nil:
+		*u = Nil
+		return nil
 	}
 
 	return fmt.Errorf("uuid: cannot convert %T to UUID", src)

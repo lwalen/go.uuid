@@ -351,8 +351,8 @@ func TestValue(t *testing.T) {
 		t.Errorf("Error getting UUID value: %s", err)
 	}
 
-	if val != u.String() {
-		t.Errorf("Wrong value returned, should be equal: %s and %s", val, u)
+	if !byteSliceEqual(val.([]byte), u.Bytes()) {
+		t.Errorf("Wrong value returned, should be equal: %v and %v", val, u)
 	}
 }
 
@@ -364,8 +364,8 @@ func TestValueNil(t *testing.T) {
 		t.Errorf("Error getting UUID value: %s", err)
 	}
 
-	if val != Nil.String() {
-		t.Errorf("Wrong value returned, should be equal to UUID.Nil: %s", val)
+	if !byteSliceEqual(val.([]byte), Nil.Bytes()) {
+		t.Errorf("Wrong value returned, should be equal to UUID.Nil: %v", val)
 	}
 }
 
@@ -464,8 +464,12 @@ func TestScanNil(t *testing.T) {
 	u := UUID{0x6b, 0xa7, 0xb8, 0x10, 0x9d, 0xad, 0x11, 0xd1, 0x80, 0xb4, 0x00, 0xc0, 0x4f, 0xd4, 0x30, 0xc8}
 
 	err := u.Scan(nil)
-	if err == nil {
-		t.Errorf("Error UUID shouldn't allow unmarshalling from nil")
+	if err != nil {
+		t.Errorf("Error UUID should allow unmarshalling from nil")
+	}
+
+	if u != Nil {
+		t.Errorf("Error UUID should unmarshalled from nil should be Nil")
 	}
 }
 
@@ -651,4 +655,18 @@ func TestNewV5(t *testing.T) {
 	if Equal(u1, u4) {
 		t.Errorf("UUIDv3 generated same UUIDs for sane names in different namespaces: %s and %s", u1, u4)
 	}
+}
+
+func byteSliceEqual(a, b []byte) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
 }
