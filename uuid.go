@@ -127,13 +127,6 @@ func unixTimeFunc() uint64 {
 // described in RFC 4122.
 type UUID [16]byte
 
-// NullUUID can be used with the standard sql package to represent a
-// UUID value that can be NULL in the database
-type NullUUID struct {
-	UUID  UUID
-	Valid bool
-}
-
 // Nil is a special form of UUID that is specified to have all
 // 128 bits set to zero.
 var Nil = UUID{}
@@ -329,27 +322,6 @@ func (u *UUID) Scan(src interface{}) error {
 // IsNil reports whether the current UUID equals Nil.
 func (u *UUID) IsNil() bool {
 	return Equal(*u, Nil)
-}
-
-// Value implements the driver.Valuer interface.
-func (u NullUUID) Value() (driver.Value, error) {
-	if !u.Valid {
-		return nil, nil
-	}
-	// Delegate to UUID Value function
-	return u.UUID.Value()
-}
-
-// Scan implements the sql.Scanner interface.
-func (u *NullUUID) Scan(src interface{}) error {
-	if src == nil {
-		u.UUID, u.Valid = Nil, false
-		return nil
-	}
-
-	// Delegate to UUID Scan function
-	u.Valid = true
-	return u.UUID.Scan(src)
 }
 
 // FromBytes returns UUID converted from raw byte slice input.
