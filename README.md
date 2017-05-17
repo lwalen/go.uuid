@@ -4,6 +4,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/lwalen/uuid/badge.svg?branch=master)](https://coveralls.io/github/lwalen/uuid)
 [![GoDoc](http://godoc.org/github.com/lwalen/uuid?status.png)](http://godoc.org/github.com/lwalen/uuid)
 
+## Differences from [satori/go.uuid](https://github.com/satori/go.uuid)
+
+* Implementation of [driver.Valuer](https://golang.org/pkg/database/sql/driver/#Valuer)
+returns `[]byte` to store UUIDs in 16-byte binary database field.
+* Unmarshals `NULL` database value into Nil UUID.
+* Provides [`Must`](https://godoc.org/github.com/lwalen/uuid#Must) helper instead of `*OrNil` functions.
+* Unmarshals base64 encoded UUIDs, provides methods to output base64 strings.
+* Removes other parts of API that I don't need.
+
+***
+
 This package provides pure Go implementation of Universally Unique Identifier (UUID). Supported both creation and parsing of UUIDs.
 
 With 100% test coverage and benchmarks out of box.
