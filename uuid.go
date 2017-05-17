@@ -248,7 +248,7 @@ func (u *UUID) UnmarshalText(text []byte) (err error) {
 		// Pick an encoder. '-' and '_' are using in URL-safe base64, in place of
 		// '+' and '/', respectively.
 		enc := base64.RawStdEncoding
-		if bytes.ContainsAny(text, "-_") {
+		if bytes.IndexAny(text, "-_") >= 0 {
 			enc = base64.RawURLEncoding
 		}
 
