@@ -204,6 +204,17 @@ func (u UUID) String() string {
 	return string(buf)
 }
 
+// Base64 returns the UUID as a base64 encoded string, without padding.
+func (u UUID) Base64() string {
+	return base64.RawStdEncoding.EncodeToString(u[:])
+}
+
+// Base64URL returns the UUID as a URL-safe base64 encoded string, without
+// padding. '-' and '_' are used in place of '+' and '/', respectively.
+func (u UUID) Base64URL() string {
+	return base64.RawURLEncoding.EncodeToString(u[:])
+}
+
 // SetVersion sets version bits.
 func (u *UUID) SetVersion(v byte) {
 	u[6] = (u[6] & 0x0f) | (v << 4)
