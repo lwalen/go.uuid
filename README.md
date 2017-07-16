@@ -7,10 +7,10 @@
 ## Differences from [satori/go.uuid](https://github.com/satori/go.uuid)
 
 * Implementation of [driver.Valuer](https://golang.org/pkg/database/sql/driver/#Valuer)
-returns `[]byte` to store UUIDs in 16-byte binary database field.
+returns `nil` instead for Nil UUID, to produce NULL in database fields. (Will panic if not nullable)
 * Unmarshals `NULL` database value into Nil UUID.
 * Provides [`Must`](https://godoc.org/github.com/lwalen/uuid#Must) helper instead of `*OrNil` functions.
-* Unmarshals base64 encoded UUIDs, provides methods to output base64 strings.
+* Provides methods to output base64 strings.
 * Removes other parts of API that I don't need.
 
 ***
