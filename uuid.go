@@ -234,34 +234,10 @@ func (u UUID) MarshalText() (text []byte, err error) {
 
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
 // Following formats are supported:
-//  "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-//  "{6ba7b810-9dad-11d1-80b4-00c04fd430c8}",
-//  "urn:uuid:6ba7b810-9dad-11d1-80b4-00c04fd430c8"
-//  "a6e4EJ2tEdGAtADAT9QwyA=="
-//  "a6e4EJ2tEdGAtADAT9QwyA"
-// As well as URL-safe Base64 with and without padding.
+// "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+// "{6ba7b810-9dad-11d1-80b4-00c04fd430c8}",
+// "urn:uuid:6ba7b810-9dad-11d1-80b4-00c04fd430c8"
 func (u *UUID) UnmarshalText(text []byte) (err error) {
-	if 22 <= len(text) && len(text) <= 24 {
-		// Remove trailing =, used for padding.
-		text = bytes.TrimRight(text, "=")
-
-		// Pick an encoder. '-' and '_' are using in URL-safe base64, in place of
-		// '+' and '/', respectively.
-		enc := base64.RawStdEncoding
-		if bytes.IndexAny(text, "-_") >= 0 {
-			enc = base64.RawURLEncoding
-		}
-
-		// Make a byte slice as big as the max decoded length of the text, then copy
-		// its first 16 bytes into the UUID.
-		b := make([]byte, enc.DecodedLen(len(text)))
-		_, err = enc.Decode(b, text)
-		if err == nil {
-			copy(u[:], b[:16])
-			return
-		}
-	}
-
 	if len(text) < 32 {
 		err = fmt.Errorf("uuid: UUID string too short: %s", text)
 		return
