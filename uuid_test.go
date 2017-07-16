@@ -420,8 +420,8 @@ func TestValueNil(t *testing.T) {
 		t.Errorf("Error getting UUID value: %s", err)
 	}
 
-	if !byteSliceEqual(val.([]byte), Nil.Bytes()) {
-		t.Errorf("Wrong value returned, should be equal to UUID.Nil: %v", val)
+	if val != nil {
+		t.Errorf("Wrong value returned, should be nil: %v", val)
 	}
 }
 
