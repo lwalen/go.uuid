@@ -335,8 +335,8 @@ func (u *UUID) Scan(src interface{}) error {
 }
 
 // IsNil reports whether the current UUID equals Nil.
-func (u *UUID) IsNil() bool {
-	return Equal(*u, Nil)
+func (u UUID) IsNil() bool {
+	return Equal(u, Nil)
 }
 
 // FromBytes returns UUID converted from raw byte slice input.
