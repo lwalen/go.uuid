@@ -34,6 +34,8 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
+	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 	"hash"
 	"net"
 	"os"
@@ -332,6 +334,27 @@ func (u *UUID) Scan(src interface{}) error {
 	}
 
 	return fmt.Errorf("uuid: cannot convert %T to UUID", src)
+}
+
+// MarshalBSONValue implements mongo's Marshaler interface.
+func (u UUID) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	return bsontype.Binary, bsoncore.AppendBinary(nil, 4, u[:]), nil
+}
+
+// MarshalBSONValue implements mongo's UnMarshaler interface.
+func (u *UUID) UnmarshalBSONValue(t bsontype.Type, raw []byte) error {
+	if t != bsontype.Binary {
+		return fmt.Errorf("invalid format on unmarshal bson value")
+	}
+
+	_, data, _, ok := bsoncore.ReadBinary(raw)
+	if !ok {
+		return fmt.Errorf("not enough bytes to unmarshal bson value")
+	}
+
+	copy(u[:], data)
+
+	return nil
 }
 
 // IsNil reports whether the current UUID equals Nil.
